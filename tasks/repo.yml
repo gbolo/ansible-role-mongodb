@@ -1,0 +1,15 @@
+---
+
+- name: "ensure mongodb repo ({{ mongodb_version }}) is present"
+  yum_repository:
+    name: "mongodb-org-{{ mongodb_version }}"
+    description: "CentOS/RHEL mongodb version {{ mongodb_version }} repo"
+    baseurl: "{{ mongodb_yum_repo_baseurl }}"
+    gpgcheck: "{{ mongodb_yum_repo_gpgcheck }}"
+    gpgkey: "{{ mongodb_yum_repo_gpgkey }}"
+    enabled: true
+    metadata_expire: "{{ mongodb_yum_repo_metadata_expire }}"
+    username: "{{ mongodb_yum_repo_username | default(omit) }}"
+    password: "{{ mongodb_yum_repo_password | default(omit) }}"
+  when:
+    - mongodb_yum_repo_enabled

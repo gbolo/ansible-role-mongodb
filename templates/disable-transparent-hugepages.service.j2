@@ -1,0 +1,11 @@
+[Unit]
+Description=Disable Transparent Huge Pages
+Before={{ mongodb_service_name }}.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=true
+{{ mongodb_system_thp_ExecStart }}
+
+[Install]
+WantedBy=multi-user.target

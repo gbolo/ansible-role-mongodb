@@ -1,0 +1,39 @@
+---
+
+# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
+- name: add systemd unit - disable transparent hugepages
+  template:
+    src: disable-transparent-hugepages.service.j2
+    dest: /etc/systemd/system/disable-transparent-hugepages.service
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+    - reload systemd
+
+- name: enable systemd unit - disable transparent hugepages
+  systemd:
+    name: disable-transparent-hugepages.service
+    state: started
+    enabled: true
+
+# https://docs.mongodb.com/manual/reference/ulimit/index.html
+- name: mongodb system tweak - ulimits
+  template:
+    src: 99-mongodb-nproc.conf.j2
+    dest: /etc/security/limits.d/99-mongodb-nproc.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - "restart {{ mongodb_service_name }} service"
+
+# https://docs.mongodb.com/manual/administration/production-checklist-operations/
+# Disable the tuned tool if you are running RHEL 7 / CentOS 7 in a virtual environment.
+- name: mongodb system tweak - disable tuned
+  systemd:
+    name: tuned
+    state: stopped
+    enabled: false
+  when:
+    - ansible_virtualization_role == "guest"

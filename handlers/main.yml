@@ -1,0 +1,10 @@
+---
+
+- name: "restart {{ mongodb_service_name }} service"
+  systemd:
+    name: "{{ mongodb_service_name }}"
+    state: restarted
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true

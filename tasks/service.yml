@@ -1,0 +1,10 @@
+---
+
+- name: flush handlers at this point to avoid double restart
+  meta: flush_handlers
+
+- name: "make sure {{ mongodb_service_name }} is enabled and started"
+  systemd:
+    name: "{{ mongodb_service_name }}"
+    enabled: true
+    state: started

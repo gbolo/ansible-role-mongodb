@@ -1,0 +1,33 @@
+---
+
+# {{ ansible_managed }}
+
+{% if (mongodb_config_net is defined) and (mongodb_config_net != None) %}
+net:
+{{ mongodb_config_net | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+{% if (mongodb_config_systemLog is defined) and (mongodb_config_systemLog != None) %}
+systemLog:
+{{ mongodb_config_systemLog | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+{% if (mongodb_config_processManagement is defined) and (mongodb_config_processManagement != None) %}
+processManagement:
+{{ mongodb_config_processManagement | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+{% if (mongodb_config_replication is defined) and (mongodb_config_replication != None) %}
+replication:
+{{ mongodb_config_replication | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+{% if (mongodb_config_storage is defined) and (mongodb_config_storage != None) %}
+storage:
+{{ mongodb_config_storage | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}
+
+{% if (mongodb_config_security is defined) and (mongodb_config_security != None) %}
+security:
+{{ mongodb_config_security | to_nice_yaml(indent=2) | indent(2, true) }}
+{% endif %}

@@ -1,0 +1,12 @@
+---
+
+- import_tasks: repo.yml
+- import_tasks: install.yml
+- import_tasks: system_tweaks.yml
+  when:
+    - mongodb_system_tweaks_enabled
+- import_tasks: config.yml
+- import_tasks: service.yml
+- import_tasks: sensu_checks.yml
+  when:
+    - mongodb_sensu_checks_enabled

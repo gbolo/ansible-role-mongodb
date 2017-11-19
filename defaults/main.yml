@@ -1,0 +1,71 @@
+---
+# mongodb version
+mongodb_version: "3.4"
+
+# mongodb yum repo defaults
+mongodb_yum_repo_enabled: true
+mongodb_yum_repo_baseurl: "https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/{{ mongodb_version }}/x86_64/"
+mongodb_yum_repo_gpgcheck: true
+mongodb_yum_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc"
+mongodb_yum_repo_metadata_expire: 300
+
+# mongodb package defaults
+mongodb_pkg_name: mongodb-org
+mongodb_pkg_state: present
+mongodb_pkg_gpg_check: true
+
+# mongodb system defaults
+mongodb_system_user: mongod
+mongodb_system_group: "{{ mongodb_system_user }}"
+mongodb_service_name: mongod
+
+# mongodb system tweaks
+mongodb_system_tweaks_enabled: false
+mongodb_system_ulimit: 64000
+# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
+mongodb_system_thp_ExecStart: |
+  ExecStart=/bin/sh -c 'echo -n "transparent_hugepage/enabled: "; echo "never" | tee /sys/kernel/mm/transparent_hugepage/enabled'
+  ExecStart=/bin/sh -c 'echo -n "transparent_hugepage/defrag: "; echo "never" | tee /sys/kernel/mm/transparent_hugepage/defrag'
+
+# mongodb sensu checks
+mongodb_sensu_checks_enabled: false
+
+# mongodb main configuration file
+# https://docs.mongodb.com/manual/reference/configuration-options
+mongodb_config_processManagement:
+  pidFilePath: /var/run/mongodb/mongod.pid
+
+mongodb_config_net:
+  port: 27017
+  bindIp: "{{ ansible_default_ipv4.address }}"
+  ipv6: false
+
+mongodb_config_systemLog:
+  verbosity: 0
+  destination: syslog
+  timeStampFormat: iso8601-local
+  #path: /var/log/mongodb/mongod.log
+  #logAppend: true
+  #logRotate: <string>
+
+mongodb_config_storage:
+  dbPath: /var/lib/mongo
+  journal:
+    enabled: true
+    commitIntervalMs: 300
+  directoryPerDB: true
+  # https://docs.mongodb.com/manual/administration/production-checklist-operations/
+  # With the WiredTiger storage engine, use of XFS is strongly recommended to avoid performance issues found when using EXT4 with WiredTiger.
+  engine: wiredTiger
+  wiredTiger:
+    engineConfig:
+      cacheSizeGB: 0.5
+      journalCompressor: snappy
+    collectionConfig:
+      blockCompressor: snappy
+
+mongodb_config_replication:
+  replSetName: graylog
+  enableMajorityReadConcern: false
+
+mongodb_config_security: ~

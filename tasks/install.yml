@@ -1,0 +1,10 @@
+---
+
+- name: "ensure {{ mongodb_pkg_name }} is installed"
+  yum:
+    name: "{{ mongodb_pkg_name }}"
+    state: "{{ mongodb_pkg_state }}"
+    update_cache: true
+    disable_gpg_check: "{{ not mongodb_pkg_gpg_check }}"
+  notify:
+    - "restart {{ mongodb_service_name }} service"

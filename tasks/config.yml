@@ -1,0 +1,11 @@
+---
+
+- name: push mongodb config
+  template:
+    src: mongod.conf.j2
+    dest: /etc/mongod.conf
+    owner: "{{ mongodb_system_user }}"
+    group: "{{ mongodb_system_group }}"
+    mode: 0640
+  notify:
+    - "restart {{ mongodb_service_name }} service"
