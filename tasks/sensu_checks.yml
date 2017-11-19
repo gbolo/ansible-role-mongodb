@@ -1,3 +1,40 @@
 ---
 
-  
+- name: installing sensu plugin requirements
+  yum:
+    name: "{{ item }}"
+    state: latest
+    update_cache: true
+  with_items:
+    - "{{ mongodb_sensu_plugin_pkgs_required }}"
+
+- name: installing mongodb sensu plugins
+  environment: "{{ proxy_env | default(omit) }}"
+  gem:
+    name: "{{ item.plugin_name }}"
+    version: "{{ item.plugin_version | default(omit) }}"
+    state: present
+    executable: "{{ mongodb_sensu_plugin_executable }}"
+    user_install: false
+  with_items:
+    - "{{ mongodb_sensu_plugins }}"
+  notify:
+    - restart sensu-client
+
+- name: creating mongodb sensu check definitions
+  sensu_check:
+    name: "{{ item.key }}"
+    command: "{{ sensu_ruby_root | default('/opt/sensu/embedded') }}/bin/{{ item.value.command }}"
+    interval: "{{ item.value.interval }}"
+    path: "{{ sensu_confd_dir | default('/etc/sensu/conf.d') }}/checks/{{ item.key | regex_replace(' ', '_') }}.json"
+    ttl: "{{ item.value.ttl | default(omit) }}"
+    standalone: true
+  with_dict: "{{ mongodb_sensu_checks }}"
+  notify:
+    - restart sensu-client
+
+# temp hack - remove gcc
+- name: temp hack - remove gcc
+  yum:
+    name: gcc
+    state: absent

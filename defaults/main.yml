@@ -29,6 +29,26 @@ mongodb_system_thp_ExecStart: |
 
 # mongodb sensu checks
 mongodb_sensu_checks_enabled: false
+mongodb_sensu_service_name: sensu-client
+mongodb_sensu_plugin_executable: /opt/sensu/embedded/bin/gem
+mongodb_sensu_plugins:
+  - plugin_name: sensu-plugins-mongodb
+  - plugin_name: sensu-plugins-process-checks
+mongodb_sensu_plugin_pkgs_required:
+  - python-pymongo
+  # lol, sensu-plugins-mongodb requires gcc for installation. We must remeber to remove it later...
+  - gcc
+mongodb_sensu_checks:
+  mongodb_connection:
+    command: "check-mongodb.rb -H {{ mongodb_config_net.bindIp }} -P {{ mongodb_config_net.port }}"
+    interval: 120
+    ttl: 300
+  proc_mongod:
+    command: "check-process.rb -f {{ mongodb_config_processManagement.pidFilePath }}"
+    interval: 120
+    ttl: 300
+  # TODO: add a check to ensure mongodb will start on boot
+  # TODO: add a check to ensure mongodb replication is working
 
 # mongodb main configuration file
 # https://docs.mongodb.com/manual/reference/configuration-options
