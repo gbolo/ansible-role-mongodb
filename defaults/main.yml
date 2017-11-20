@@ -104,9 +104,10 @@ mongodb_config_storage:
   #   collectionConfig:
   #     blockCompressor: snappy
 
-mongodb_config_replication:
-  replSetName: graylog
-  enableMajorityReadConcern: false
+## settings for replication ----------------------------------------------------
+# mongodb_config_replication:
+#   replSetName: graylog
+#   enableMajorityReadConcern: false
 
 # TODO: complete the security section
 mongodb_config_security: ~
