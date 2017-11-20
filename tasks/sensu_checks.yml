@@ -7,6 +7,9 @@
     update_cache: true
   with_items:
     - "{{ mongodb_sensu_plugin_pkgs_required }}"
+  when:
+    - mongodb_sensu_checks_enabled
+    - not mongodb_remove_sensu_checks
 
 - name: installing required sensu check bins
   copy:
@@ -17,6 +20,9 @@
     group: root
   with_items:
     - "{{ mongodb_sensu_bins }}"
+  when:
+    - mongodb_sensu_checks_enabled
+    - not mongodb_remove_sensu_checks
 
 - name: installing mongodb sensu plugins
   environment: "{{ proxy_env | default(omit) }}"
@@ -30,6 +36,9 @@
     - "{{ mongodb_sensu_plugins }}"
   notify:
     - restart sensu-client
+  when:
+    - mongodb_sensu_checks_enabled
+    - not mongodb_remove_sensu_checks
 
 - name: creating mongodb sensu check definitions
   sensu_check:
@@ -42,3 +51,27 @@
   with_dict: "{{ mongodb_sensu_checks }}"
   notify:
     - restart sensu-client
+  when:
+    - mongodb_sensu_checks_enabled
+    - not mongodb_remove_sensu_checks
+
+# removal of checks
+
+- name: remove mongodb sensu check definitions
+  file:
+    path: "{{ mongodb_sensu_checks_dir }}/{{ item.key | regex_replace(' ', '_') }}.json"
+    state: absent
+  with_dict: "{{ mongodb_sensu_checks }}"
+  notify:
+    - restart sensu-client
+  when:
+    - mongodb_remove_sensu_checks
+
+- name: remove required sensu check bins
+  file:
+    path: "{{ item.dest | default('/opt/sensu/embedded') }}/{{ item.filename }}"
+    state: absent
+  with_items:
+    - "{{ mongodb_sensu_bins }}"
+  when:
+    - mongodb_remove_sensu_checks

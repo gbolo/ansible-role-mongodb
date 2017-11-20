@@ -9,4 +9,4 @@
 - import_tasks: service.yml
 - import_tasks: sensu_checks.yml
   when:
-    - mongodb_sensu_checks_enabled
+    - (mongodb_sensu_checks_enabled or mongodb_remove_sensu_checks)

@@ -29,10 +29,10 @@ mongodb_system_thp_ExecStart: |
 
 # mongodb sensu checks
 mongodb_sensu_checks_enabled: false
+mongodb_remove_sensu_checks: false
 mongodb_sensu_service_name: sensu-client
 mongodb_sensu_plugin_executable: /opt/sensu/embedded/bin/gem
 mongodb_sensu_plugins:
-  - plugin_name: sensu-plugins-mongodb
   - plugin_name: sensu-plugins-process-checks
 mongodb_sensu_bins:
   - filename: check_mongodb.py
