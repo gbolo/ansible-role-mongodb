@@ -86,16 +86,27 @@ mongodb_config_storage:
   directoryPerDB: true
   # https://docs.mongodb.com/manual/administration/production-checklist-operations/
   # With the WiredTiger storage engine, use of XFS is strongly recommended to avoid performance issues found when using EXT4 with WiredTiger.
-  engine: wiredTiger
-  wiredTiger:
-    engineConfig:
-      cacheSizeGB: 0.5
-      journalCompressor: snappy
-    collectionConfig:
-      blockCompressor: snappy
+  engine: mmapv1
+  # mmapv1:
+  #   preallocDataFiles: <boolean>
+  #   nsSize: <int>
+  #   quota:
+  #     enforced: <boolean>
+  #     maxFilesPerDB: <int>
+  #   smallFiles: <boolean>
+  #   journal:
+  #     debugFlags: <int>
+  #     commitIntervalMs: <num>
+  # wiredTiger:
+  #   engineConfig:
+  #     cacheSizeGB: 0.5
+  #     journalCompressor: snappy
+  #   collectionConfig:
+  #     blockCompressor: snappy
 
 mongodb_config_replication:
   replSetName: graylog
   enableMajorityReadConcern: false
 
+# TODO: complete the security section
 mongodb_config_security: ~
