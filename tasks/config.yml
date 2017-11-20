@@ -9,3 +9,13 @@
     mode: 0640
   notify:
     - "restart {{ mongodb_service_name }} service"
+
+- name: "ensure dbPath is created {{ mongodb_config_storage.dbPath }}"
+  file:
+    path: "{{ mongodb_config_storage.dbPath }}"
+    state: directory
+    mode: 0750
+    owner: "{{ mongodb_system_user }}"
+    group: "{{ mongodb_system_group }}"
+  when:
+    - mongodb_config_storage.dbPath is defined
