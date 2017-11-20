@@ -34,13 +34,23 @@ mongodb_sensu_plugin_executable: /opt/sensu/embedded/bin/gem
 mongodb_sensu_plugins:
   - plugin_name: sensu-plugins-mongodb
   - plugin_name: sensu-plugins-process-checks
+mongodb_sensu_bins:
+  - filename: check_mongodb.py
+    dest: /opt/sensu/embedded/bin
 mongodb_sensu_plugin_pkgs_required:
   - python-pymongo
-  # lol, sensu-plugins-mongodb requires gcc for installation. We must remeber to remove it later...
-  - gcc
+mongodb_sensu_checks_dir: /etc/sensu/conf.d/checks
 mongodb_sensu_checks:
-  mongodb_connection:
-    command: "check-mongodb.rb -H {{ mongodb_config_net.bindIp }} -P {{ mongodb_config_net.port }}"
+  mongodb_connection_time:
+    command: "check_mongodb.py -A connect -H {{ mongodb_config_net.bindIp }} -P {{ mongodb_config_net.port }} -W 2 -C 4"
+    interval: 120
+    ttl: 300
+  mongodb_free_connections:
+    command: "check_mongodb.py -A connections -H {{ mongodb_config_net.bindIp }} -P {{ mongodb_config_net.port }} -W 70 -C 80"
+    interval: 120
+    ttl: 300
+  mongodb_avg_flush_time:
+    command: "check_mongodb.py -A flushing -H {{ mongodb_config_net.bindIp }} -P {{ mongodb_config_net.port }} -W 100 -C 200"
     interval: 120
     ttl: 300
   proc_mongod:
