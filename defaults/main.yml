@@ -111,3 +111,22 @@ mongodb_config_storage:
 
 # TODO: complete the security section
 mongodb_config_security: ~
+
+## mongo shell commands to execute ---------------------------------------------
+### use this section to execute commands, like initializing a replica set
+mongodb_shell_execute_enabled: false
+mongodb_shell_temp_file_path: /tmp/ansible-mongo-shell.js
+### example value for mongodb_shell_commands
+# mongodb_shell_commands: |
+#   rs.initiate( {
+#      _id : "{{ mongodb_config_replication.replSetName }}",
+#      members: [ { _id : 0, host : "{{ inventory_hostname }}" } ]
+#   })
+#   sleep(2000)
+#
+#   rs.add("mongodb-02.example.com")
+#   sleep(2000)
+#
+#   rs.add("mongodb-03.example.com")
+#   sleep(2000)
+#   printjson(rs.status())

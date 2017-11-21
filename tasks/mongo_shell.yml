@@ -1,0 +1,9 @@
+---
+
+- name: "create temp mongo shell js file {{ mongodb_shell_temp_file_path }}"
+  copy:
+    content: "{{ mongodb_shell_commands }}"
+    dest: "{{ mongodb_shell_temp_file_path }}"
+
+- name: "execute mongo shell commands via file {{ mongodb_shell_temp_file_path }}"
+  shell: "mongo --host {{ mongodb_config_net.bindIp }} --port {{ mongodb_config_net.port }} < {{ mongodb_shell_temp_file_path }}"

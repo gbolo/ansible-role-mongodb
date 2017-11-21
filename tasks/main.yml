@@ -22,3 +22,10 @@
     - mongodb_wait_for_start | default(true)
   tags:
     - mongodb_status
+
+- import_tasks: mongo_shell.yml
+  when:
+    - mongodb_shell_execute_enabled
+    - mongodb_shell_commands is defined
+  tags:
+    - mongo_shell
