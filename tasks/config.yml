@@ -19,3 +19,42 @@
     group: "{{ mongodb_system_group }}"
   when:
     - mongodb_config_storage.dbPath is defined
+
+- name: create systemd dropin directory
+  file:
+    path: "/etc/systemd/system/{{ mongodb_service_name }}.service.d"
+    state: "directory"
+    mode: 0750
+    owner: root
+    group: root
+  when:
+    - mongodb_cmd_options is defined
+    - mongodb_cmd_options != None
+
+- name: add our systemd dropin
+  template:
+    src: mongodb-cmd-override.conf.j2
+    dest: "/etc/systemd/system/{{ mongodb_service_name }}.service.d/mongodb-cmd-override.conf"
+    mode: 0640
+    owner: root
+    group: root
+  register: mongodb_push_dropin
+  when:
+    - mongodb_cmd_options is defined
+    - mongodb_cmd_options != None
+
+- name: remove our systemd dropin
+  file:
+    dest: "/etc/systemd/system/{{ mongodb_service_name }}.service.d/mongodb-cmd-override.conf"
+    state: absent
+  register: mongodb_remove_dropin
+  when:
+    - (mongodb_cmd_options is not defined or mongodb_cmd_options == None)
+
+- name: reload systemd
+  systemd:
+    daemon_reload: true
+  when:
+    - (mongodb_push_dropin.changed or mongodb_remove_dropin.changed)
+  notify:
+    - "restart {{ mongodb_service_name }} service"

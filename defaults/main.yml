@@ -19,6 +19,9 @@ mongodb_system_user: mongod
 mongodb_system_group: "{{ mongodb_system_user }}"
 mongodb_service_name: mongod
 
+# mongodb additional startup command options
+mongodb_cmd_options: ~
+
 # mongodb system tweaks
 mongodb_system_tweaks_enabled: false
 mongodb_system_ulimit: 64000
