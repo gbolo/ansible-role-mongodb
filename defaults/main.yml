@@ -67,6 +67,9 @@ mongodb_sensu_checks:
 # https://docs.mongodb.com/manual/reference/configuration-options
 mongodb_config_processManagement:
   pidFilePath: /var/run/mongodb/mongod.pid
+  # systemd unit for centos assumes fork=true
+  fork: true
+  timeZoneInfo: /usr/share/zoneinfo
 
 mongodb_config_net:
   port: 27017
